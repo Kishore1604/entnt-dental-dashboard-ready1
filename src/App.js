@@ -1,23 +1,14 @@
+// src/pages/CalendarView.js
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import Dashboard from "./pages/Dashboard";
-import Patients from "./pages/Patients";
-import Appointments from "./pages/Appointments";
-import CalendarView from "./pages/CalendarView";
 
-export default function App() {
+const CalendarView = () => {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/patients" element={<Patients />} />
-        <Route path="/appointments" element={<Appointments />} />
-        <Route path="/calendar" element={<CalendarView />} />
-      </Routes>
-    </Router>
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold mb-4">🗓️ Calendar View</h1>
+      <p>Calendar UI will go here.</p>
+    </div>
   );
-}
-// force redeploy to fix logo case issue
+};
+
+export default CalendarView;
 
