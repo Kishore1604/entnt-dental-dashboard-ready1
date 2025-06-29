@@ -1,37 +1,63 @@
-import React from "react";
-import { Link } from "react-router-dom";
+// src/pages/Dashboard.js
+import React, { useEffect, useState } from "react";
 
-export default function Dashboard() {
-  const user = JSON.parse(localStorage.getItem("currentUser"));
-  const isAdmin = user?.role === "Admin";
+const Dashboard = () => {
+  const userRole = localStorage.getItem("userRole");
+  const [patients, setPatients] = useState([]);
+  const [appointments, setAppointments] = useState([]);
 
-  const getCount = (key) => JSON.parse(localStorage.getItem(key) || "[]").length;
+  useEffect(() => {
+    const storedPatients = JSON.parse(localStorage.getItem("patients")) || [];
+    const storedAppointments = JSON.parse(localStorage.getItem("appointments")) || [];
+    setPatients(storedPatients);
+    setAppointments(storedAppointments);
+  }, []);
+
+  const totalRevenue = appointments.reduce((sum, a) => sum + Number(a.fee || 0), 0);
+  const completedAppointments = appointments.filter(a => a.status === "completed").length;
+  const avgRating = (() => {
+    const ratings = appointments
+      .filter(a => a.rating)
+      .map(a => Number(a.rating));
+    return ratings.length ? (ratings.reduce((a, b) => a + b) / ratings.length).toFixed(1) : "N/A";
+  })();
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Welcome {user?.role}!</h1>
-      {isAdmin ? (
-        <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-4">
-            <Card title="Total Patients" value={getCount("patients")} />
-            <Card title="Appointments" value={getCount("appointments")} />
-            <Card title="Revenue" value={`₹${getCount("appointments") * 500}`} />
+      <h1 className="text-2xl font-bold mb-6">
+        Welcome {userRole === "admin" ? "Admin" : "Patient"}!
+      </h1>
+
+      {userRole === "admin" ? (
+        <div className="grid md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
+            <h2 className="text-lg font-semibold mb-2">👥 Total Patients</h2>
+            <p className="text-2xl">{patients.length}</p>
           </div>
-          <nav className="space-x-4 mt-4">
-            <Link to="/patients" className="text-blue-600 underline">Patient Management</Link>
-            <Link to="/appointments" className="text-blue-600 underline">Appointments</Link>
-          </nav>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
+            <h2 className="text-lg font-semibold mb-2">📅 Appointments</h2>
+            <p className="text-2xl">{appointments.length}</p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
+            <h2 className="text-lg font-semibold mb-2">💰 Revenue</h2>
+            <p className="text-2xl">₹{totalRevenue}</p>
+          </div>
         </div>
       ) : (
-        <p>You are logged in as a Patient.</p>
+        <p>This is your dashboard as a patient. You can view your appointments or reports.</p>
+      )}
+
+      {userRole === "admin" && (
+        <div className="mt-6">
+          <h2 className="text-xl font-bold mb-2">📊 Quick Stats</h2>
+          <ul className="list-disc ml-5 text-sm">
+            <li>Completed Appointments: {completedAppointments}</li>
+            <li>Average Rating: {avgRating}</li>
+          </ul>
+        </div>
       )}
     </div>
   );
-}
+};
 
-const Card = ({ title, value }) => (
-  <div className="bg-white p-4 shadow rounded">
-    <h2 className="text-lg font-semibold">{title}</h2>
-    <p className="text-xl">{value}</p>
-  </div>
-);
+export default Dashboard;

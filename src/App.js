@@ -1,14 +1,34 @@
-// src/pages/CalendarView.js
+// src/App.js
 import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
-const CalendarView = () => {
+import LoginPage from "./pages/LoginPage";
+import Dashboard from "./pages/Dashboard";
+import Patients from "./pages/Patients";
+import Appointments from "./pages/Appointments";
+import Reports from "./pages/Reports";
+import ExportCSV from "./pages/exportcsv";
+import Layout from "./components/layout";
+
+function App() {
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">🗓️ Calendar View</h1>
-      <p>Calendar UI will go here.</p>
-    </div>
+    <>
+      <Toaster position="top-right" />
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/patients" element={<Patients />} />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/export" element={<ExportCSV />} />
+          </Route>
+        </Routes>
+      </Router>
+    </>
   );
-};
+}
 
-export default CalendarView;
-
+export default App;
